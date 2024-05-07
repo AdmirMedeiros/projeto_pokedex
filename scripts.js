@@ -7,13 +7,14 @@ const input = document.querySelector('.buscar')
 const btnPrev = document.querySelector('.btn-prev')
 const btnNext = document.querySelector('.btn-next')
 
-let pokemonAtual = 1
-
+let pokemonAtual = 13
 async function loadPokemon(pokemon) {
     const url = `https://pokeapi.co/api/v2/pokemon/${pokemon}`
     const response = await fetch(url)
+    if(response.status === 200){
     const data = await response.json()
     return data
+    }
 }
 async function renderPokemon(pokemon){
     pokemonName.innerHTML = 'Carregando...'
@@ -25,7 +26,47 @@ async function renderPokemon(pokemon){
         pokemonName.innerHTML = data.name
         pokemonNumber.innerHTML = data.id
         pokemonImage.src = data['sprites']['versions']['generation-v']['black-white']['animated']['front_default']
+        pokemonAtual = data.id
+        input.value = ''
+
+    }
+    else{
+        pokemonImage.style.display = 'none'
+        pokemonName.innerText = 'Não encontrado'
+        pokemonNumber.innerText = ''
     }
 }
 
+form.addEventListener('submit',(event) => {
+    event.preventDefault()
+    renderPokemon(input.value.toLowerCase())
+    input.value = ''
+})
+
+
+btnNext.addEventListener('click',() =>{
+    pokemonAtual++
+    renderPokemon(pokemonAtual)
+})
+
+btnPrev.addEventListener('click',() =>{
+    if(pokemonAtual > 1){
+    pokemonAtual--
+    renderPokemon(pokemonAtual)
+    }
+
+})
+
 renderPokemon(pokemonAtual)
+
+
+
+
+
+
+
+
+
+
+
+
